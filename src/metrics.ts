@@ -23,8 +23,13 @@ export class MetricsHandler {
   public save(key: string, metrics: Metric[], callback: (error: Error | null) => void) {
     const stream = WriteStream(this.db)
     console.log(metrics);
-    stream.on('error', callback)
-    stream.on('close', callback)
+    stream.on('error', (err: Error) => {
+      callback(err)
+    })
+    .on('end', (err: Error) => {
+      callback(null)
+    })
+    //stream.on('end', callback(null))
     metrics.forEach((m: Metric) => {
       stream.write({ key: `metric:${key}:${m.timestamp}`, value: m.value })
     });

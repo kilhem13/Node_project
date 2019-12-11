@@ -25,8 +25,10 @@ app.get('/hello/:name', (req: any, res: any) => {
 
 app.get('/metrics/:id', (req: any, res: any) => {
   dbMet.get(req.params.id, (err: Error | null, result?: any) => {
+    console.log(result[0].timestamp)
     if (err) throw err
     res.json(result)
+    
   })
 })
 app.get('/metrics', (req: any, res: any) => {

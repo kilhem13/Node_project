@@ -27,3 +27,19 @@ describe('#get', function () {
       })
     })
   })
+  describe('#save', function () {
+    it('should add a metrics', function () {
+      dbMet.save("-1", [{ "timestamp":"1234", "value": 20 }], function (err: Error | null) {
+        expect(err).to.be.null
+        /*dbMet.get("10", function (err: Error | null, result?: Metric[]) {
+          expect(err).to.be.null
+          //expect(result).to.not.be.undefined
+          expect(result).to.be.undefined
+          if(result)
+            expect(result).to.be.equal("123")
+          //expect(result).to.not.be.empty
+      })*/
+    })
+      })
+
+  })
