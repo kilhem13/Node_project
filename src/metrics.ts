@@ -61,6 +61,7 @@ export class MetricsHandler {
     
     stream.on('error', callback)
         .on('data', (data: any) => {
+          console.log(data)
             const [_, k, timestamp] = data.key.split(":")
             const value = data.value
             met.push(new Metric(timestamp, value))

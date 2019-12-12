@@ -8,8 +8,8 @@
     "start": "./node_modules/.bin/ts-node src/server.ts",
     "build": "./node_modules/.bin/tsc -p tsconfig.json",
     "dev": "./node_modules/.bin/nodemon ",
-    "populate": "./node_modules/.bin/ts-node bin/populate.ts"
-     
+    "populate": "./node_modules/.bin/ts-node bin/populate.ts",
+    "populate_user": "./node_modules/.bin/ts-node bin/populate_user.ts"
   },
   "author": "",
   "license": "ISC",
@@ -19,9 +19,13 @@
     "ejs": "^2.7.4",
     "encoding-down": "^6.3.0",
     "express": "^4.17.1",
+    "express-session": "^1.17.0",
+    "level": "^6.0.0",
+    "level-session-store": "^2.2.0",
     "level-ws": "^2.0.0",
     "leveldown": "^5.4.1",
     "levelup": "^4.3.2",
+    "morgan": "^1.9.1",
     "ts-node": "^8.5.2",
     "typescript": "^3.7.2"
   },
