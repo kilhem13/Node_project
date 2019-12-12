@@ -3,18 +3,17 @@ import { MetricsHandler } from './metrics'
 import path = require('path')
 import bodyparser = require('body-parser')
 import morgan = require('morgan')
-
 import session = require('express-session')
 import levelSession = require('level-session-store')
 import { UserHandler, User } from './user'
+
 const dbUser: UserHandler = new UserHandler('./db/users')
 const authRouter = express.Router()
-
 const LevelStore = levelSession(session)
 const userRouter = express.Router()
-
 const app = express()
 const port: string = process.env.PORT || '8080'
+
 app.use(express.static(path.join(__dirname, '/../public')))
 app.use(bodyparser.json())
 app.use(bodyparser.urlencoded({extended: false}))
@@ -40,9 +39,11 @@ app.post('/login', (req: any, res: any, next: any) => {
 
 app.post('/signup', (req: any, res: any, next: any) => {
   dbUser.get(req.body.username, (err: Error | null, result?: User) => {
-    if (err) next(err)
-    if(req.body.password != req.body.password_repeate && result !== undefined)
+    //if (err) next(err)
+    //console.log("failed signup")
+    if(req.body.password != req.body.password_repeate || result !== undefined)
     {
+     
       res.redirect('/signup')
     }
     else {
