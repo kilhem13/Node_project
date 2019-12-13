@@ -24,3 +24,22 @@ describe('#get', function () {
         })
     })
 })
+
+describe('#save', function () {
+    it('Sould create a user', function(done) {
+        const user_test: string = "user_test"
+        const email: string = "user@test.fr"
+        const passtest: string = "passtest"
+        dbUsers.save(new User( user_test, email, passtest, true), function(err: Error |null) {
+            expect(err).to.be.undefined
+            dbUsers.get(user_test, function( err: Error |null, result?: User) {
+                expect(err).to.be.null
+                expect(result).to.not.be.undefined
+                expect(result).to.not.be.null
+                if(result)
+                    expect(result.email).to.be.equal(email)
+                done()
+            })
+        })
+    })
+})

@@ -43,7 +43,6 @@ export class UserHandler {
 
     public get(username: string, callback: (err: Error | null, result?: User) => void) {
         this.db.get(`user:${username}`, function (err: Error, data: any) {
-            console.log(err.name)
             if(err){
                 if(err.name == "NotFoundError")
                 {
