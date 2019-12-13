@@ -37,16 +37,23 @@ export class UserHandler {
     constructor(path: string) {
         this.db = LevelDB.open(path)
     }
+    public closeDB() {
+        this.db.close();
+      }
 
     public get(username: string, callback: (err: Error | null, result?: User) => void) {
         this.db.get(`user:${username}`, function (err: Error, data: any) {
-            console.log(err)
+            console.log(err.name)
             if(err){
-                console.log("Inside")
-                return callback(null)        
+                if(err.name == "NotFoundError")
+                {
+                    return callback(null, data)
+                }
+                else
+                    return callback(err)        
             }
-            else if(data === undefined) return callback(null, data)
-            callback(null, User.fromDb(username, data))
+            else
+                callback(null, User.fromDb(username, data))
         })
     }
     public getall(callback: (err: Error | null, result?: string) => void) {
