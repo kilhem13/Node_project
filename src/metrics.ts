@@ -22,18 +22,16 @@ export class MetricsHandler {
   }
   public save(key: string, metrics: Metric[], callback: (error: Error | null) => void) {
     const stream = WriteStream(this.db)
-    console.log(metrics);
-    stream.on('error', (err: Error) => {
-      callback(err)
-    })
-    .on('end', (err: Error) => {
-      callback(null)
-    })
-    //stream.on('end', callback(null))
+    stream
+        .on('error', (err: Error) => {
+            return callback(err)
+        })
+        .on('close', (err: Error) => {
+            return callback(null)
+        })    
     metrics.forEach((m: Metric) => {
-      stream.write({ key: `metric:${key}:${m.timestamp}`, value: m.value })
+        stream.write({ key: `metric:${key}:${m.timestamp}`, value: m.value })
     });
-  
     stream.end()
   }
   
@@ -41,7 +39,10 @@ export class MetricsHandler {
     const stream = this.db.createReadStream()
     var met: Metric[] = []
     
-    stream.on('error', callback)
+    stream
+    .on('error', (err: Error) => {
+      callback(err, met)
+    })
       .on('data', (data: any) => {
         const [_, k, timestamp] = data.key.split(":")
         const value = data.value

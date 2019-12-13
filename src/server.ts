@@ -13,6 +13,15 @@ const LevelStore = levelSession(session)
 const userRouter = express.Router()
 const app = express()
 const port: string = process.env.PORT || '8080'
+const dbMet: MetricsHandler = new MetricsHandler('./db/metrics')
+
+app.use(morgan('dev'))
+app.use(session({
+  secret: 'my very secret phrase',
+  store: new LevelStore('./db/sessions'),
+  resave: true,
+  saveUninitialized: true
+}))
 
 app.use(express.static(path.join(__dirname, '/../public')))
 app.use(bodyparser.json())
@@ -20,6 +29,16 @@ app.use(bodyparser.urlencoded({extended: false}))
 app.use(authRouter)
 app.use('/user', userRouter)
 
+const authCheck = function (req: any, res: any, next: any) {
+  if(req.session.loggedIn)
+    next()
+  else
+    res.redirect('/login')
+}
+
+app.get('/', authCheck,(req: any, res: any) => {
+  res.render('index', { name: req.session.username })
+} )
 
 app.post('/login', (req: any, res: any, next: any) => {
   dbUser.get(req.body.username, (err: Error | null, result?: User) => {
@@ -28,11 +47,10 @@ app.post('/login', (req: any, res: any, next: any) => {
     if (result === undefined || !result.validatePassword(req.body.password)) {
       res.redirect('/login')
     } else {
-      console.log("found")
-      res.redirect('/test')
+      
       req.session.loggedIn = true
       req.session.user = result
-      //res.redirect('/')
+      res.redirect('/')
     }
   })
 })
@@ -77,14 +95,6 @@ authRouter.get('/logout', (req: any, res: any) => {
   res.redirect('/login')
 })
 
-const dbMet: MetricsHandler = new MetricsHandler('./db/metrics')
-app.use(morgan('dev'))
-app.use(session({
-  secret: 'my very secret phrase',
-  store: new LevelStore('./db/sessions'),
-  resave: true,
-  saveUninitialized: true
-}))
 
 
 app.get('/', (req: any, res: any) => {

@@ -22,12 +22,12 @@ export class User {
     }
     public validatePassword(toValidate: String): boolean {
         // return comparison with hashed password
-        return true;
+        return toValidate === this.getPassword();
     }
     public static fromDb(username: string, value: any) {
         const [password, email] = value.split(":")
         console.log(password)
-        return new User(username, email, password)
+        return new User(username, email, password, true)
     }
 }
 
