@@ -58,10 +58,8 @@ app.post('/login', (req: any, res: any, next: any) => {
 app.post('/signup', (req: any, res: any, next: any) => {
   dbUser.get(req.body.username, (err: Error | null, result?: User) => {
     //if (err) next(err)
-    //console.log("failed signup")
-    if(req.body.password != req.body.password_repeate || result !== undefined)
+    if(req.body.password != req.body.password_repeate || result !== undefined || req.body.username == null || req.body.email == null || req.body.password == null)
     {
-     
       res.redirect('/signup')
     }
     else {
@@ -139,8 +137,7 @@ app.delete('/metrics/:id', (req: any, res: any) => {
     })
   });
   })
-
-
+  
 app.listen(port, (err: Error) => {
   if (err) throw err
   console.log(`Server is running on http://localhost:${port}`)
