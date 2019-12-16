@@ -30,7 +30,7 @@ export class MetricsHandler {
             return callback(null)
         })    
     metrics.forEach((m: Metric) => {
-        stream.write({ key: `metric:${key}:${m.timestamp}`, value: m.value })
+        stream.write({ key:`metric:${key}:${m.timestamp}`, value: m.value })
     });
     stream.end()
   }

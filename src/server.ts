@@ -173,6 +173,16 @@ app.get('/users', (req: any, res: any) => {
     res.json(result)
   })
 })
+app.post('/add_metrics', (req:any, res: any) => {
+  console.log(req.session.user.username)
+  dbMet.save(req.session.user.username, [req.body], (err: Error | null) => {
+        if (err) throw err
+    res.status(200).send()
+  })
+})
+app.get('/add_metrics', (req: any, res:any) =>{
+  res.render('add_metric')
+})
 
 
 
