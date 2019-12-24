@@ -6,6 +6,9 @@ import del = require('del')
 
 export class LevelDB {
   static open(path: string) {
+    if(!fs.existsSync(path)) {
+      fs.mkdirSync(path, { recursive: true });
+      }
     const encoded = encoding(
       leveldown(path),
       { valueEncoding: 'json' }

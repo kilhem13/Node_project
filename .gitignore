@@ -78,7 +78,7 @@ typings/
 # MacOS
 .DS_Store
 
-#db/*
+db/*
 !*/.gitkeep
 src_old
 db_test
