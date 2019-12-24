@@ -2,7 +2,7 @@
 [![Build Status](https://travis-ci.org/kilhem13/Node_project.svg?branch=master)](https://travis-ci.org/kilhem13/Node_project)
 ## Introduction
 
-The basic Node.js application on TypeScript.
+My first Node.js project
 
 ## Installing
 
@@ -22,7 +22,11 @@ npm run populate
 ```bash
 npm test
 ```
+## Test in Docker
 
+```bash
+sudo docker-compose up
+```
 
 ## Run
 
