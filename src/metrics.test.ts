@@ -28,17 +28,48 @@ describe('#get', function () {
   })
 
   
-/*describe('#save', function()  {
+describe('#save', function()  {
 	it('should add metrics', function() {
-		dbMet.save()
-	})
-}*/
+    var timestamp = "000000000000"
+    var met = new Metric(timestamp, 30)
+		dbMet.save('test', [met], function (err: Error | null) {
+        expect(err).to.be.null
+        dbMet.get("test", function (err: Error | null, result?: Metric[]) {
+          expect(err).to.be.null
+          console.log(result)
+          expect(result).to.not.be.empty
+          expect(result).to.not.be.undefined
+          if(result !== undefined)
+            expect(result[0].timestamp).to.be.equal(timestamp)
+          
+        })
+      })
+
+    })
+  })
+  describe('#modify', function()  {
+    it('should modify metrics', function() {
+      var timestamp = "000000000000"
+      dbMet.modify('test', timestamp, 24, function (err: Error | null) {
+          expect(err).to.be.null
+          dbMet.get("test", function (err: Error | null, result?: Metric[]) {
+            expect(err).to.be.null
+            expect(result).to.not.be.empty
+            expect(result).to.not.be.undefined
+            if(result !== undefined)
+              expect(result[0].timestamp).to.be.equal(timestamp)
+            
+          })
+        })
+  
+      })
+    })
 
 describe("#delete", function() {
   it('should delete a metrics', function(done) {
-    dbMet.delete("10", function (err: Error | null) {
+    dbMet.delete("test", function (err: Error | null) {
       expect(err).to.be.null
-      dbMet.get("10", function (err:Error | null, result?: Metric[]){
+      dbMet.get("test", function (err:Error | null, result?: Metric[]){
         expect(err).to.be.null
         expect(result).to.be.empty
         done()

@@ -7,21 +7,27 @@ The basic Node.js application on TypeScript.
 ## Installing
 
 ```bash
-git clone https://github.com/sergkudinov/ece-nodejs-3-leveldb.git
-cd ece-nodejs-3-leveldb
+git clone https://github.com/kilhem13/Node_project.git
+cd Node_project
 npm install
 ```
-
-## Build
+## Poulate
 
 ```bash
-npm run build
+npm run populate
 ```
 
-## Development
+## Test
 
 ```bash
-npm run dev
+npm test
+```
+
+
+## Run
+
+```bash
+npm start
 ```
 
 ## Contributors

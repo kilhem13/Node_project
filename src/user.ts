@@ -17,7 +17,7 @@ export class User {
             this.password = password
     }
     public setPassword(password: string) {
-        console.log(password)
+        //(password)
     }
     public getPassword() {
         return this.password
@@ -28,7 +28,7 @@ export class User {
     }
     public static fromDb(username: string, value: any) {
         const [password, email] = value.split(":")
-        console.log(password)
+       // console.log(password)
         return new User(username, email, password, true)
     }
 }
@@ -70,7 +70,6 @@ export class UserHandler {
 
 
     public save(user: User, callback : (err: Error | null) => void) {
-        console.log("write")
         const stream = WriteStream(this.db)
     stream
         .on('error', (err: Error) => {
@@ -79,9 +78,9 @@ export class UserHandler {
         .on('close', (err: Error) => {
             return callback(null)
         }) 
-        console.log(user.getPassword())
         stream.write( {key:`user:${user.username}`, value: `${user.getPassword()}:${user.email}`})
         stream.end()
+        //return callback(null)
     }
     public delete(username: string, callback: (err: Error | null) => void) {
         const stream = this.db.createKeyStream()

@@ -42,7 +42,7 @@ app.get('/', authCheck,(req: any, res: any) => {
 
 
 app.get('/graph', authCheck,(req: any, res: any) => {
-    console.log(req.session.user.username)
+    //console.log(req.session.user.username)
     res.render('graph', { name: req.session.user.username })
 } )
 
@@ -131,7 +131,7 @@ app.get('/metrics', (req: any, res: any) => {
   })
 })
 app.post('/metrics/:id', (req: any, res: any) => {
-  console.log(req.body);
+  //console.log(req.body);
   dbMet.save(req.params.id, req.body, (err: Error | null) => {
     if (err) throw err
     res.status(200).send()
@@ -186,7 +186,7 @@ app.get('/users', (req: any, res: any) => {
   })
 })
 app.post('/add_metrics',  authCheck,(req:any, res: any) => {
-  console.log(req.session.user.username)
+ // console.log(req.session.user.username)
   dbMet.save(req.session.user.username, [req.body], (err: Error | null) => {
         if (err) throw err
     res.redirect("/")
@@ -201,7 +201,7 @@ app.get('/delete_metric',  authCheck,(req: any, res:any) =>{
 })
 
 app.post('/delete_metric/',  authCheck,(req: any, res: any) => {
-  console.log(req.body)
+  //console.log(req.body)
     dbMet.delete_by_timestamp(req.body.timestamp_to_delete, function (err: Error | null) {
       if(err) throw err
     })
