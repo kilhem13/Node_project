@@ -7,14 +7,26 @@
     <div class="col-md-6 col-md-offset-3">
       <h1>Hello <%= name %></h1>
       <p><%= email%></p>
-      <button class="btn btn-success" id="show-metrics">
+      <button style="margin: 10px;" class="btn btn-success" id="show-metrics">
         Bring the metrics
       </button>
-      <button class="btn btn-success" id="add-metrics" href="/add_metrics" onClick='document.location.href="/add_metrics"''>
+      <button style="margin: 10px;" class="btn btn-success" id="add-metrics" href="/add_metrics" onClick='document.location.href="/add_metrics"''>
           Add a metric
         </button>
       <div id="metrics"></div>
-      <button class="btn btn-danger" href="/logout" onClick='document.location.href="/logout"'>
+      <button style="margin: 10px;" class="btn btn-success" href="/delete_metric" onClick='document.location.href="/delete_metric"'>
+        Delete metrics
+      </button>
+      <button style="margin: 10px;" class="btn btn-success" href="/modify_metrics" onClick='document.location.href="/modify_metrics"'>
+        Modify metrics
+      </button>
+      <button id="graph" style="margin: 10px;"class="btn btn-success" href="/graph" onClick='document.location.href="/graph"'>
+        Show metrics in graph
+      </button>
+      <button  style="margin: 10px;"class="btn btn-success" href="/my_account" onClick='document.location.href="/my_account"'>
+        Modify my informations
+      </button>
+      <button style="margin: 10px;" class="btn btn-danger" href="/logout" onClick='document.location.href="/logout"'>
         Logout
       </button>
     </div>
@@ -29,6 +41,7 @@
           $('#metrics').append(content.join("\n"));
         });
       })
+      
     </script>
   </body>
 </html>

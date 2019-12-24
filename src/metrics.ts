@@ -72,14 +72,14 @@ export class MetricsHandler {
         })
   }
   public delete(id: string, callback: (err: Error | null) => void) {
-    const straem = this.db.createKeyStream()
+    const stream = this.db.createKeyStream()
     	.on('data', data => {
             if(data.split(":")[1] === id) {
                 this.db.del(data, (err: Error) => {
                     if(err) throw err;
                 });
             }
-	    })
+      })
 	.on("error", err => {
 		callback(err);
 	})
@@ -87,5 +87,46 @@ export class MetricsHandler {
 		callback(null);
 	});
   }
+
+ public delete_by_timestamp(timestamp_del: any, callback: (err: Error | null) => void) {
+    
+    const stream = this.db.createKeyStream()
+      .on('data', (data: any) => {
+        console.log('data')
+        const [_, k, timestamp] = data.split(":")
+        console.log(timestamp);
+        console.log(timestamp_del)
+        if(timestamp === timestamp_del) {
+            console.log(data)
+            this.db.del(data, (err: Error)=>{
+                if(err) throw err;
+                callback(null);
+			})
+        }
+			
+      })
+      .on("error", err => {
+        callback(err);
+      })
+      .on("close", () => {
+        callback(null);
+      });
+    }
+    public modify(key: string, timestamp: string, value: any, callback: (err: Error | null) => void) {
+      var met = new Metric(timestamp, value);
+      const stream = WriteStream(this.db)
+      stream
+          .on('error', (err: Error) => {
+              return callback(err)
+          })
+          .on('close', (err: Error) => {
+              return callback(null)
+          })    
+     // metrics.forEach((m: Metric) => {
+          stream.write({ key:`metric:${key}:${met.timestamp}`, value: met.value })
+      stream.end()
+
+    }
+ 
 }
 

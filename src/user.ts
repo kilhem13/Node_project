@@ -1,5 +1,7 @@
 import { LevelDB } from "./leveldb"
 import WriteStream from 'level-ws'
+import { on } from "cluster"
+import { request } from "http"
 
 export class User {
     public username: string
@@ -68,12 +70,28 @@ export class UserHandler {
 
 
     public save(user: User, callback : (err: Error | null) => void) {
-        this.db.put(`user:${user.username}`, `${user.getPassword()}:${user.email}`, (err: Error | null) => {
-            callback(err)
+        console.log("write")
+        const stream = WriteStream(this.db)
+    stream
+        .on('error', (err: Error) => {
+            return callback(err)
         })
+        .on('close', (err: Error) => {
+            return callback(null)
+        }) 
+        console.log(user.getPassword())
+        stream.write( {key:`user:${user.username}`, value: `${user.getPassword()}:${user.email}`})
+        stream.end()
     }
     public delete(username: string, callback: (err: Error | null) => void) {
-        // TODO
+        const stream = this.db.createKeyStream()
+        .on('data', (data: any) => {
+            const usr = data.split(":")[1];
+            if(usr === username)
+                this.db.del(data, (err: Error | null) => {
+                    if(err) throw err;
+                })
+        })
       }
 
 

@@ -1,5 +1,5 @@
 import express = require('express')
-import { MetricsHandler } from './metrics'
+import { MetricsHandler, Metric } from './metrics'
 import path = require('path')
 import bodyparser = require('body-parser')
 import morgan = require('morgan')
@@ -40,6 +40,12 @@ app.get('/', authCheck,(req: any, res: any) => {
   res.render('index', { name: req.session.user.username, email: req.session.user.email })
 } )
 
+
+app.get('/graph', authCheck,(req: any, res: any) => {
+    console.log(req.session.user.username)
+    res.render('graph', { name: req.session.user.username })
+} )
+
 app.post('/login', (req: any, res: any, next: any) => {
   dbUser.get(req.body.username, (err: Error | null, result?: User) => {
     if (err) next(err)
@@ -68,6 +74,9 @@ app.post('/signup', (req: any, res: any, next: any) => {
       if(err) throw err
       res.status(200).send()
     })
+    req.session.loggedIn = true
+    req.session.user = new_usr
+    res.redirect('/')
   }
   })
 
@@ -79,6 +88,7 @@ app.set('view engine', 'ejs');
 authRouter.get('/login', (req: any, res: any) => {
   res.render('login')
 })
+
 authRouter.get('/signup', (req: any, res: any) => {
   res.render('signup')
 })
@@ -95,10 +105,6 @@ authRouter.get('/logout', (req: any, res: any) => {
 
 
 
-app.get('/', (req: any, res: any) => {
-  res.write('Hello world')
-  res.end()
-})
 
 app.get('/hello/:name', (req: any, res: any) => {
   res.render('hello.ejs', {name: req.params.name})
@@ -106,9 +112,15 @@ app.get('/hello/:name', (req: any, res: any) => {
 
 app.get('/metrics/:id', (req: any, res: any) => {
   dbMet.get(req.params.id, (err: Error | null, result?: any) => {
-    console.log(result[0].timestamp)
-    if (err) throw err
-    res.json(result)
+    if(result !== undefined)
+    {
+      //console.log(result[0].timestamp)
+      if (err) throw err
+      res.json(result)
+    }
+    else {
+      res.json(null)
+    }
     
   })
 })
@@ -160,7 +172,7 @@ else res.status(201).send("user persisted")
   })
 })
 
-userRouter.get('/:username', (req: any, res: any, next: any) => {
+userRouter.get('/:username',  authCheck, (req: any, res: any, next: any) => {
   dbUser.get(req.params.username, function (err: Error | null, result?: User) {
     if (err || result === undefined) {
       res.status(404).send("user not found")
@@ -173,16 +185,67 @@ app.get('/users', (req: any, res: any) => {
     res.json(result)
   })
 })
-app.post('/add_metrics', (req:any, res: any) => {
+app.post('/add_metrics',  authCheck,(req:any, res: any) => {
   console.log(req.session.user.username)
   dbMet.save(req.session.user.username, [req.body], (err: Error | null) => {
         if (err) throw err
-    res.status(200).send()
+    res.redirect("/")
   })
 })
-app.get('/add_metrics', (req: any, res:any) =>{
+app.get('/add_metrics',  authCheck,(req: any, res:any) =>{
   res.render('add_metric')
 })
 
+app.get('/delete_metric',  authCheck,(req: any, res:any) =>{
+  res.render('delete_metric',  { name: req.session.user.username})
+})
 
+app.post('/delete_metric/',  authCheck,(req: any, res: any) => {
+  console.log(req.body)
+    dbMet.delete_by_timestamp(req.body.timestamp_to_delete, function (err: Error | null) {
+      if(err) throw err
+    })
+    res.redirect("/delete_metric")
+})
+app.get('/my_account', authCheck, (req: any, res: any) => {
+    res.render('my_account', { user: req.session.user })
+})
 
+app.post('/modify_account', authCheck, (req: any, res: any) => {
+    if(req.body.password === req.body.rep_password)
+    {
+    const usr = new User(req.session.user.username, req.body.email, req.body.password, true) 
+    dbUser.save(usr, (err: Error | null) => {
+        if(err) throw err
+    })
+    req.session.user = usr
+    res.redirect('/')
+}
+else {
+    res.redirect('/my_account?error=1')
+}
+})
+
+app.get('/delete_account',  authCheck,(req: any, res: any) => {
+  dbMet.delete(req.session.user.username, (err: Error | null ) => {
+    if(err) throw err
+  })
+  dbUser.delete(req.session.user.username, (err: Error | null) => {
+      if(err) throw err;
+  })
+  delete req.session.loggedIn
+  delete req.session.user
+  res.redirect('/login')
+})
+
+app.get('/modify_metrics', authCheck, (req: any, res: any) => {
+    res.render('modify_metrics', {user: req.session.user})
+})
+
+app.post('/modify_metrics', authCheck, (req: any, res: any) => {
+    dbMet.modify(req.session.user.username, req.body.timestamp_to_modify, req.body.value, (err: Error | null ) => {
+        if(err)throw err
+        res.render('modify_metrics', {user: req.session.user})
+    })
+    //res.render('modify_metrics', {user: req.session.user})
+})

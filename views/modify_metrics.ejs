@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+      <% include partials/head %>
+
+    <script>
+        function getQueryVariable(variable)
+    {
+       var query = window.location.search.substring(1);
+       var vars = query.split("&");
+       for (var i=0;i<vars.length;i++) {
+               var pair = vars[i].split("=");
+               if(pair[0] == variable){return pair[1];}
+       }
+       return(false);
+    }
+        console.log(getQueryVariable('error'))
+        if(getQueryVariable('error') == 1)
+            alert('Passwords must be equals')
+
+    </script>
+  </head>
+  <body class="container">
+    <div class="col-md-6 col-md-offset-3">
+      <h1>Hello <%= user.username %></h1>
+    
+      
+        <div id="metrics"></div>
+      <button class="btn btn-danger" href="/" onClick='document.location.href="/"'>
+        Back
+      </button>
+    </div>
+
+    <script>
+      
+        var met = document.getElementById('metrics');
+        var string_to_add = document.createElement('div');
+        //var string_to_add = "";
+        $.getJSON("/metrics/<%= user.username %>", {}, (data) => {
+          const content = data.map(d => {
+            string_to_add.innerHTML += "<form action='/modify_metrics' method='post'><input type='text' value='"+d.timestamp+"'  name='timestamp_to_modify' style='padding:5px;' /><input type='text' style='padding:5px;'  value = '"+d.value+"' name='value'></input><button class='btn btn-danger'  type='submit' value='Submit'>Modify</button></form>\n"
+          })
+          console.log(string_to_add)
+          met.appendChild(string_to_add);
+        })
+    </script>
+  </body>
+</html>

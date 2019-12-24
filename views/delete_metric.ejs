@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+      <% include partials/head %>
+  </head>
+  <body class="container">
+    <div class="col-md-6 col-md-offset-3">
+      <h1>Hello <%= name %></h1>
+    
+      <div id="metrics"></div>
+      <button class="btn btn-danger" href="/" onClick='document.location.href="/"'>
+        Back
+      </button>
+    </div>
+
+    <script>
+      
+        var met = document.getElementById('metrics');
+        var string_to_add = document.createElement('div');
+        //var string_to_add = "";
+        $.getJSON("/metrics/<%= name %>", {}, (data) => {
+          const content = data.map(d => {
+            string_to_add.innerHTML += "<form action='/delete_metric' method='post'><input type='text' value='"+d.timestamp+"'  name='timestamp_to_delete' style='padding:5px;' /> <button class='btn btn-danger'  type='submit' value='Submit'>X</button></form>\n"
+          })
+          console.log(string_to_add)
+          met.appendChild(string_to_add);
+        })
+    </script>
+  </body>
+</html>

@@ -27,25 +27,12 @@ describe('#get', function () {
     })
   })
 
-
-  describe('#save', function () {
-    it('should add a metrics', function (done) {
-      dbMet.save("10", [{ "timestamp":"1234", "value": 20 }],  (error: Error | null) => {
-        expect(error).to.be.null
-        dbMet.get("10", function (err: Error | null, result?: Metric[]) {
-          expect(err).to.be.null
-          expect(result).to.not.be.undefined
-          if(result)
-          {
-            expect(result[0]).to.not.be.undefined
-            expect(result[0].timestamp ).to.be.equal("1234")
-          }done()
-          //expect(result).to.not.be.empty
-      })
-      })
-      
-    })
-  })
+  
+/*describe('#save', function()  {
+	it('should add metrics', function() {
+		dbMet.save()
+	})
+}*/
 
 describe("#delete", function() {
   it('should delete a metrics', function(done) {
@@ -59,4 +46,4 @@ describe("#delete", function() {
       
     })
   })
-})
+})	

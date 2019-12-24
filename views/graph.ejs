@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <% include partials/head %>
+</head>
+<body>
+
+<script>
+	window.onload = function() {
+		//console.log(req.session.user.username)
+		var data_metric = [];
+		$.getJSON("/metrics/<%= name%>", {}, (data) => {
+			if(data) {
+				const content = data.map(d => {
+				data_metric.push({
+					x: parseInt(d.timestamp, 10),
+					y: parseInt(d.value, 10)
+				})
+				console.log(data_metric)
+				//return '\ntimestamp: '+d.timestamp+', value: '+d.value+'';
+			  })     
+			}
+	var chart = new CanvasJS.Chart("chartContainer", {
+		animationEnabled: true,
+		title: {
+			text: "Metrics"
+		},
+		axisX: {
+			title: "Time"
+		},
+		axisY: {
+			title: "Value",
+			suffix: ""
+		},
+		data: [{
+			type: "line",
+			name: "CPU Utilization",
+			connectNullData: true,
+			//nullDataLineDashType: "solid",
+			xValueType: "dateTime",
+			xValueFormatString: "DD MMM hh:mm TT",
+			yValueFormatString: "#,##0.##\"%\"",
+			
+			
+			dataPoints: data_metric
+		}]
+	});chart.render();
+		});
+	
+	
+	}
+	</script>
+<div id="chartContainer" style="height: 370px; width: 100%;"></div>
+<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+</body>
+</html>
